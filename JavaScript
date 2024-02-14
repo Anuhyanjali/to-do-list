@@ -1,0 +1,99 @@
+document.addEventListener('DOMContentLoaded', () => {
+    loadTasks();
+});
+
+function addTask() {
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+
+    if (taskInput.value.trim() === '') {
+        alert('Please enter a task.');
+        return;
+    }
+
+    const taskText = taskInput.value.trim();
+    const taskId = new Date().getTime().toString();
+    const taskTime = prompt('Enter time for the task (e.g., 10:00 AM):');
+
+    if (!taskTime) {
+        alert('Please enter a valid time for the task.');
+        return;
+    }
+
+    const formattedTime = formatTime(taskTime);
+
+    const li = document.createElement('li');
+    li.innerHTML = `<span>${taskText} - ${formattedTime}</span>
+                    <button class="edit" onclick="editTask('${taskId}')"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="delete" onclick="deleteTask('${taskId}')"><i class="fas fa-times"></i></button>
+                    <button class="clock" onclick="setTime('${taskId}')"><i class="far fa-clock"></i></button>`;
+    li.setAttribute('data-id', taskId);
+    taskList.appendChild(li);
+
+    saveTask(taskId, taskText, formattedTime);
+
+    taskInput.value = '';
+}
+
+function editTask(taskId) {
+    const taskList = document.getElementById('taskList');
+    const taskItem = document.querySelector(li[data-id="${taskId}"]);
+
+    if (taskItem) {
+        const newText = prompt('Edit the task:', taskItem.innerText.split(' - ')[0]);
+        if (newText !== null) {
+            taskItem.querySelector('span').textContent = ${newText} - ${getTaskTime(taskId)};
+            updateTask(taskId, newText, getTaskTime(taskId));
+        }
+    }
+}
+
+function setTime(taskId) {
+    const taskList = document.getElementById('taskList');
+    const taskItem = document.querySelector(li[data-id="${taskId}"]);
+
+    if (taskItem) {
+        const newTime = prompt('Enter new time for the task (e.g., 2:30 PM):');
+        if (newTime !== null) {
+            const formattedTime = formatTime(newTime);
+            taskItem.querySelector('span').textContent = ${getTaskText(taskId)} - ${formattedTime};
+            updateTask(taskId, getTaskText(taskId), formattedTime);
+        }
+    }
+}
+
+function formatTime(time) {
+    const parsedTime = new Date(2000-01-01T${time});
+    return parsedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function getTaskTime(taskId) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || {};
+    return tasks[taskId] ? tasks[taskId].time : '';
+}
+
+function getTaskText(taskId) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || {};
+    return tasks[taskId] ? tasks[taskId].text : '';
+}
+
+function deleteTask(taskId) {
+    const taskList = document.getElementById('taskList');
+    const taskItem = document.querySelector(li[data-id="${taskId}"]);
+
+    if (taskItem) {
+        taskList.removeChild(taskItem);
+        removeTask(taskId);
+    }
+}
+
+function saveTask(id, text, time) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || {};
+    tasks[id] = { text, time };
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function removeTask(id) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || {};
+    delete tasks[id];
+    localStorage.setItem('tasks', JSON.stringify
